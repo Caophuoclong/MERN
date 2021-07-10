@@ -1,0 +1,32 @@
+.input-group {
+  margin: 10px auto;
+  max-width: 60%;
+}
+.input-group-prepend {
+  width: 25%; /*adjust as needed*/
+}
+
+.input-group-prepend label {
+  width: 100%;
+  overflow: hidden;
+}
+.input-group-text {
+  justify-content: center;
+}
+.add-on-date {
+  width: 35%;
+}
+#rdp-input-group-2 {
+  margin: 0px;
+}
+#rdp-input-group-4{
+  margin: 0px;
+}
+
+.form-date-picker:last-child{
+    justify-content: flex-end;
+}
+.title{
+  text-align: center;
+  margin: 15px 0px;
+}
