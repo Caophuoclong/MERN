@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 import React, { useState } from "react";
+import Select from "react-select";
 import { useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   Button,
   Container,
@@ -35,7 +36,7 @@ function TodoForm(props) {
     todoContent: yup.string().required("Bắt buộc phải nhập"),
     dayend: yup.date().min(new Date().toISOString()),
   });
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, control } = useForm({
     validationSchema: validationSchema,
   });
   const [dayStart, setDayStart] = useState(new Date().toISOString());
@@ -43,12 +44,13 @@ function TodoForm(props) {
     new Date(new Date().setDate(new Date().getDate() + 1)).toISOString()
   );
   const { handleReturnHome, handleOnSubmit, handleSubmitEdit, todo } = props;
-  
-  const onChangeDateStart = (data) => {
-    setDayStart(data);
-  };
-  const onChangeDateEnd = (data) => {
+  const options = [
+    { value: "important", label: "Important" },
+    { value: "normal", label: "Normal" },
+    { value: "not-important", label: "Not important" },
+  ];
 
+  const onChangeDateEnd = (data) => {
     if (!(data <= new Date().toDateString()) || data < dayStart) {
       alert(
         "Ngày không hợp lệ, ngày kết thúc phải lớn hơn ngày hiện tại hoặc phải lớn hơn ngày bắt đầu"
@@ -61,77 +63,83 @@ function TodoForm(props) {
   const onSubmit = (data, e) => {
     handleOnSubmit(data, e);
   };
-  const onEdit = (data)=>{
+  const onEdit = (data) => {
     data.id = todo.id;
     handleSubmitEdit(data);
     history.push("/todo");
     console.log(data);
-  }
-  if(Object.keys(todo).length !== 0) return (
-    <div>
-      <Container>
-        <h1 className="title">Nhập lại thông tin cần chỉnh sửa</h1>
-        <Form onSubmit={handleSubmit(onEdit)}>
-          <InputGroup>
-            {" "}
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Tiêu đề</InputGroupText>
-            </InputGroupAddon>
-            <Input
-            autoFocus={true}
-              defaultValue={todo.todoTitle}
-              id="todoText"
-              className="todoText"
-              {...register("todoTitle")}
-              placeholder="Công việc cần làm"
-            />
-          </InputGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Nội dung</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              defaultValue={todo.todoContent}
-              id="todoText"
-              className="todoText"
-              {...register("todoContent", { required: true })}
-              placeholder="Công việc cần làm"
-            />
-          </InputGroup>
-          <InputGroup className="justify-content-between">
-            <div className="d-flex align-items-center form-date-picker">
-              <InputGroupAddon className="add-on-date" addonType="prepend">
-                <InputGroupText>Ngày bắt đầu</InputGroupText>
+  };
+  if (Object.keys(todo).length !== 0)
+    return (
+      <div>
+        <Container>
+          <h1 className="title">Nhập lại thông tin cần chỉnh sửa</h1>
+          <Form onSubmit={handleSubmit(onEdit)}>
+            <InputGroup>
+              {" "}
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Tiêu đề</InputGroupText>
               </InputGroupAddon>
-              <DatePicker
-                {...register("daystart", { required: true })}
-                value={todo.daystart}
-                onChange={onChangeDateStart}
-                className="date-picker"
+              <Input
+                autoFocus={true}
+                
+                id="todoText"
+                className="todoText"
+                {...register("todoTitle")}
+                defaultValue={todo.todoTitle}
+                placeholder="Công việc cần làm"
               />
-            </div>
-            <div className="d-flex align-items-center form-date-picker">
-              <InputGroupAddon className="add-on-date" addonType="prepend">
-                <InputGroupText>Ngày Kết thúc</InputGroupText>
+            </InputGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Nội dung</InputGroupText>
               </InputGroupAddon>
-              <DatePicker
-                {...register("dayend", {
-                  required: true,
-                  validate: (value) => value >= new Date().toISOString(),
-                })}
-                value={todo.dayend}
-                onChange={onChangeDateEnd}
-                className="date-picker"
+              <Input
+               {...register("todoContent", {required: true})}
+                id="todoText"
+                className="todoText"
+                
+                defaultValue={todo.todoContent}
+                placeholder="Công việc cần làm"
               />
-            </div>
-          </InputGroup>
-          <InputGroup className="justify-content-center">
-            <Button type="submit">Submit</Button>
-          </InputGroup>
-        </Form>
-      </Container>
-    </div>
-  )
+            </InputGroup>
+            <Controller
+              name="select-value"
+              {...register("todoSelect")}
+              control={control}
+              defaultValue={todo.todoSelect}
+
+              render={({ field }) => (
+                <Select
+                  className="form-select-level"
+                  {...field}
+                  options={options}
+                />
+              )}
+            />
+            <InputGroup className="justify-content-center">
+              <div className="d-flex align-items-center form-date-picker">
+                <InputGroupAddon className="add-on-date" addonType="prepend">
+                  <InputGroupText>Ngày Kết thúc</InputGroupText>
+                </InputGroupAddon>
+                <DatePicker
+                  {...register("dayend", {
+                    required: true,
+                    validate: (value) => value >= new Date().toISOString(),
+                  })}
+                  value={todo.dayend}
+                  onChange={onChangeDateEnd}
+                  className="date-picker"
+                />
+              </div>
+            </InputGroup>
+            <InputGroup className="justify-content-center">
+              <Button type="submit">Submit</Button>
+            </InputGroup>
+          </Form>
+        </Container>
+      </div>
+    );
   return (
     <div>
       <Container>
@@ -162,18 +170,19 @@ function TodoForm(props) {
               placeholder="Công việc cần làm"
             />
           </InputGroup>
-          <InputGroup className="justify-content-between">
-            <div className="d-flex align-items-center form-date-picker">
-              <InputGroupAddon className="add-on-date" addonType="prepend">
-                <InputGroupText>Ngày bắt đầu</InputGroupText>
-              </InputGroupAddon>
-              <DatePicker
-                {...register("daystart", { required: true })}
-                value={dayStart}
-                onChange={onChangeDateStart}
-                className="date-picker"
+          <Controller
+            name="select-value"
+            {...register("todoSelect")}
+            control={control}
+            render={({ field }) => (
+              <Select
+              className="form-select-level"
+                {...field}
+                options={options}
               />
-            </div>
+            )}
+          />
+          <InputGroup className="justify-content-center">
             <div className="d-flex align-items-center form-date-picker">
               <InputGroupAddon className="add-on-date" addonType="prepend">
                 <InputGroupText>Ngày Kết thúc</InputGroupText>

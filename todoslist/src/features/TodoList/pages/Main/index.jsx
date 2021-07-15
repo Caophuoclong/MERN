@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
 import dateformat from "dateformat";
-import { useSelector } from "react-redux";
+import $ from "jquery";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Select from "react-select";
 import {
   Container,
   Input,
@@ -9,9 +11,11 @@ import {
   InputGroupAddon,
   InputGroupText,
 } from "reactstrap";
-import "./main.css";
 import DatePicker from "reactstrap-date-picker";
-
+import { removeTodo } from "../../../todoSlice";
+import "./main.css";
+import Popup from "../../components/Popup";
+import { Helmet } from "react-helmet";
 // import PropTypes from 'prop-types';
 
 TodoList.propTypes = {};
@@ -19,10 +23,18 @@ TodoList.propTypes = {};
 function TodoList(props) {
   const date = new Date().toISOString();
   const [startDate, setStartDate] = useState(date);
+  const [trigger, setTrigger] = useState(false);
   const handleChangeDate = (date) => {
     setStartDate(date);
   };
   let todoList = useSelector((state) => state.todo);
+  const dispatch = useDispatch();
+  const handleClickRemoveTodo = (todo) => {
+    const x = todoList.filter(({id})=> id !== todo.id);
+    window.localStorage.setItem("todoList", JSON.stringify([...x]));
+    const action = removeTodo(todo.id);
+    dispatch(action);
+  };
 
   useEffect(() => {
     todoList = todoList.slice().sort((b) => {
@@ -31,11 +43,33 @@ function TodoList(props) {
       return b_day - today;
     });
     console.log(todoList);
-  }, [startDate]);
+  }, [startDate]); 
+
+  const options = [
+    { value: "by-date", label: "Date" },
+    { value: "by-level", label: "Muc do" },
+  ];
+  const handleOnClickShow = (e) => {
+    console.log(e);
+    if ($(`.${e.target.id}`).css("display") === "none") {
+      $(`.${e.target.id}`).css("display", "flex");
+    } else {
+      $(`.${e.target.id}`).css("display", "none");
+    }
+  };
 
   return (
     <div>
-      <Container style={{margin: "auto"}}>
+      <Helmet>
+        <link rel="shortcut icon" href="https://img.icons8.com/ios/50/000000/reminders.png" />
+        <title>Todo App</title>
+      </Helmet>
+      <Container style={{ margin: "auto" }}>
+        <Select
+          className="select-level"
+          defaultValue="--- Sap xep theo ---"
+          options={options}
+        />
         <div className="long">
           <DatePicker
             value={startDate}
@@ -47,7 +81,7 @@ function TodoList(props) {
         <div className="items">
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Search</InputGroupText>
+              <InputGroupText>Tim kiem</InputGroupText>
             </InputGroupAddon>
             <Input value="xin chao" />
           </InputGroup>
@@ -66,19 +100,64 @@ function TodoList(props) {
               <div className="deadline-status-bar">Ngày</div>
               <div className="title-status-bar">Tiêu đề</div>
             </div>
-            {todoList.map((value) => (
+
+            {todoList.map((value) =>
+              value.dayend >= startDate ? (
+                <li className="status-bar main-todo-items" key={value.id}>
+                  <div
+                    className={`date ${
+                      value.todoSelect === undefined
+                        ? "not-selected"
+                        : value.todoSelect.value
+                    }`}
+                  >
+                    {dateformat(Date.parse(value.dayend), "dd/mm/yyyy")}
+                  </div>
+                  <div
+                    id={value.id.substring(0, 4)}
+                    onClick={handleOnClickShow}
+                    className={`title-todo ${
+                      value.todoSelect === undefined
+                        ? "not-selected"
+                        : value.todoSelect.value
+                    }`}
+                    to={`/todo/edit/${value.id}`}
+                  >
+                    {value.todoTitle}
+                  </div>
+                  {/* <Link className={`title-todo ${value.todoSelect === undefined? "not-selected":value.todoSelect.value}`}to={`/todo/edit/${value.id}`} >
              
-             value.dayend >= startDate ?  <li className="status-bar main-todo-items" key={value.id}>
-             <div className="date">
-               {dateformat(Date.parse(value.dayend), "dd/mm/yyyy")}
-             </div>
-             <Link className="title-todo" to={`/todo/edit/${value.id}`} >
-             <div >{value.todoTitle}</div>
-             </Link>
-           </li>: null
-               
-                
-            ))}
+             
+             </Link> */}
+
+                  <ul
+                    className={`${value.id.substring(
+                      0,
+                      4
+                    )} title-todo long-ngu edit-menu-items`}
+                  >
+                    <li className="edit-item" onClick={() => setTrigger(true)}>
+                      V
+                    </li>
+                    <Popup
+                      trigger={trigger}
+                      setTrigger={setTrigger}
+                      content={value.todoContent}
+                    ></Popup>
+
+                    <li className="edit-item">
+                      <Link to={`/todo/edit/${value.id}`}>E</Link>
+                    </li>
+                    <li
+                      onClick={() => handleClickRemoveTodo(value)}
+                      className="edit-item"
+                    >
+                      R
+                    </li>
+                  </ul>
+                </li>
+              ) : null
+            )}
           </ul>
         </div>
         <Link to="/todo/add">Add form</Link>

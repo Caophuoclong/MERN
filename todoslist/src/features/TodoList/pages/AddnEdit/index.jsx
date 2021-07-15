@@ -6,8 +6,6 @@ import casual, { date } from "casual-browserify";
 import { Container } from "reactstrap";
 import { useHistory } from "react-router-dom";
 import "./AddnEdit.css";
-AddnEdit.propTypes = {};
-
 function AddnEdit(props) {
   const history = useHistory();
   const [todoList, setTodoList] = useState([]);
