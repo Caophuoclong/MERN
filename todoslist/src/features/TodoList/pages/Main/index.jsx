@@ -97,7 +97,7 @@ function TodoList(props) {
               Những công việc phải hoàn thành
             </h3>
             <div className="status-bar">
-              <div className="deadline-status-bar">Ngày</div>
+              <div className="deadline-status-bar">Thời gian</div>
               <div className="title-status-bar">Tiêu đề</div>
             </div>
 
@@ -111,7 +111,7 @@ function TodoList(props) {
                         : value.todoSelect.value
                     }`}
                   >
-                    {dateformat(Date.parse(value.dayend), "dd/mm/yyyy")}
+                    {value.timeTodoEnd?`${value.timeTodoEnd}-`:null}{dateformat(Date.parse(value.dayend), "dd/mm/yyyy")}
                   </div>
                   <div
                     id={value.id.substring(0, 4)}

@@ -1,0 +1,72 @@
+.timer-settings{
+    text-align: right;}
+.timer-settings-icon{
+    position: relative;
+    right: 10px;
+    cursor: pointer;
+}
+.timer-settings-icon:hover{
+    color: red;
+}
+.settings-menu{
+    position: fixed;
+    background-color: rgba(0,0,0,0.4);
+
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+}
+.settings-inner{
+    position: relative;
+    top: 10px;
+
+    width: 50%;
+    height: 100%;
+    
+    background-color: rgba(255,255,255,0.8);
+    margin:  auto;
+    
+    border-radius: 10px;
+}
+.settings-close{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    font-size: 2vw;
+    cursor: pointer;
+}
+.options-settings{
+    position: absolute;
+    left: 10px;
+    margin-top: 100px;
+}
+.form-group-input{
+    display: flex;
+    
+}
+.form-group-button{
+    display: flex;
+    justify-content: space-evenly;
+}
+.input-time{
+    margin: 15px;
+}
+.btn-save, .btn-reset{
+    width: 20%;
+    height: 40px;
+
+    border-radius: 10px;
+    background-color: rgb(235, 229, 229)
+
+}
+.label-time{
+    border: none;
+    width: 100%;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: bolder;
+
+    cursor: pointer;
+}

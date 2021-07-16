@@ -2,31 +2,32 @@ import React, { useState } from "react";
 import Helmet from "react-helmet";
 import BarChoose from "../../components/BarChoose";
 import CountDownTimer from "../../components/CountDownTimer";
+import TimerSettings from "../../components/timerSettings";
 import "./mainTimer.css";
 
 function Main() {
   Notification.requestPermission();
 
-  const [time, setTime] = useState(25);
+  const [timePomodoro, setTimePomodoro] = useState(25);
   const [status, setStatus] = useState(true);
   const [counter, setCounter] = useState(0);
   const [inProgress, setInProgress] = useState("pomodoro");
   const handlePomoroClick = () => {
     new Notification("New Pomodoro")
-    setTime(25);
+    setTimePomodoro(25);
     setStatus(true);
     setInProgress("pomodoro");
   };
   const handleShortBreakClick = () => {
     new Notification("Take a short rest");
     setInProgress("short-break")
-    setTime(5);
+    setTimePomodoro(5);
     setStatus(false);
   };
   const handleLongBreakClick = () => {
     new Notification("Take a longer rest");
     setInProgress("long-break");
-    setTime(10);
+    setTimePomodoro(10);
     setStatus(false);
   };
   const handleBreak = () => {
@@ -40,6 +41,9 @@ function Main() {
     handlePomoroClick();
     setCounter(counter + 1);
   };
+  const handleChangeTime = (value)=>{
+    console.log(value);
+  }
   return (
     <div className="mainTimer">
       <Helmet>
@@ -53,12 +57,13 @@ function Main() {
         inProgress={inProgress}
 
       />
+      <TimerSettings changeTime={handleChangeTime}/>
 
       <CountDownTimer
         break_Pomodoro={handleBreak}
         restart={handleRestart}
         status={status}
-        Time={time}
+        Time={timePomodoro}
       />
     </div>
   );

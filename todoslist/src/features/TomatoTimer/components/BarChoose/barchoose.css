@@ -34,3 +34,8 @@ p.bar-choose{
     background-color: rgba(197, 247, 147, 0.7);
     
 }
+@media screen and (max-width:600px){
+    p.bar-choose{
+        font-size: 4vw;
+    }
+}

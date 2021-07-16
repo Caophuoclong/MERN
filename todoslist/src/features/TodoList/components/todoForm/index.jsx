@@ -15,7 +15,7 @@ import {
 import "./todoForm.scss";
 import DatePicker from "reactstrap-date-picker";
 import * as yup from "yup";
-
+import TimeInput from "react-input-time";
 TodoForm.propTypes = {
   handleOnSubmit: PropTypes.func,
   handleReturnHome: PropTypes.func,
@@ -82,7 +82,6 @@ function TodoForm(props) {
               </InputGroupAddon>
               <Input
                 autoFocus={true}
-                
                 id="todoText"
                 className="todoText"
                 {...register("todoTitle")}
@@ -95,10 +94,9 @@ function TodoForm(props) {
                 <InputGroupText>Nội dung</InputGroupText>
               </InputGroupAddon>
               <Input
-               {...register("todoContent", {required: true})}
+                {...register("todoContent", { required: true })}
                 id="todoText"
                 className="todoText"
-                
                 defaultValue={todo.todoContent}
                 placeholder="Công việc cần làm"
               />
@@ -108,7 +106,6 @@ function TodoForm(props) {
               {...register("todoSelect")}
               control={control}
               defaultValue={todo.todoSelect}
-
               render={({ field }) => (
                 <Select
                   className="form-select-level"
@@ -118,6 +115,16 @@ function TodoForm(props) {
               )}
             />
             <InputGroup className="justify-content-center">
+              <div className="input-form-time d-flex align-items-center">
+                <InputGroupAddon className="add-on-moment" addonType="prepend">
+                  <InputGroupText>Kết thúc luc</InputGroupText>
+                </InputGroupAddon>
+                <TimeInput
+                  className="timeTodoEnd form-control"
+                  {...register("timeTodoEnd")}
+                  initialTime={todo.timeTodoEnd}
+                />
+              </div>
               <div className="d-flex align-items-center form-date-picker">
                 <InputGroupAddon className="add-on-date" addonType="prepend">
                   <InputGroupText>Ngày Kết thúc</InputGroupText>
@@ -176,14 +183,24 @@ function TodoForm(props) {
             control={control}
             render={({ field }) => (
               <Select
-              className="form-select-level"
+                className="form-select-level"
                 {...field}
                 options={options}
               />
             )}
           />
-          <InputGroup className="justify-content-center">
-            <div className="d-flex align-items-center form-date-picker">
+          <InputGroup className="">
+            <div className="input-form-time d-flex align-items-center">
+              <InputGroupAddon className="add-on-moment" addonType="prepend">
+                <InputGroupText>Kết thúc luc</InputGroupText>
+              </InputGroupAddon>
+              <TimeInput
+                className="timeTodoEnd form-control"
+                {...register("timeTodoEnd")}
+                placeholder="00:00"
+              />
+            </div>
+            <div className="input-form-time d-flex align-items-center form-date-picker">
               <InputGroupAddon className="add-on-date" addonType="prepend">
                 <InputGroupText>Ngày Kết thúc</InputGroupText>
               </InputGroupAddon>
