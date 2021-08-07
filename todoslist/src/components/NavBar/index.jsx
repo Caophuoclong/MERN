@@ -14,6 +14,9 @@ function NavBar(props) {
           <Link to="/covid">Covid </Link>
         </li>
         <li>
+          <a href="https://music.tcplong.me">Music</a>
+        </li>
+        <li>
           <Link to="/timer"> Timer</Link>
         </li>
       </ul>
